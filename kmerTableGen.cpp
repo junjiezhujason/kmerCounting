@@ -7,7 +7,7 @@
 // gcc kmerTableGen.cpp -o kmerTableGen -lstdc++
 // ./kmerTableGen 
 
-typedef std::map <uint64_t, uint32_t> mapKmer;
+typedef std::map <uint64_t, uint64_t> mapKmer;
 
 class kmerReader{ // a file reader that goes through kmers
     FILE *_fa;
@@ -29,7 +29,7 @@ public:
     bool eos;          // whether the kmer is the last one or not
     //char *kmerChar;
     uint64_t kmer;
-    uint32_t pos;
+    uint64_t pos;
     kmerReader(uint32_t len, FILE *fa) 
         :  _len(len), _fa(fa) {
         // kmerChar = (char*) malloc(_len*sizeof(char));
@@ -187,9 +187,9 @@ void printbits(uint64_t binStr, int len){
 //kmerReader::kmerReader (FILE *_fa, uint32_t _len) {
 //} TO DO: USE A CONSTURCTOR LATER
 
-void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll, mapKmer& kmerUni){
-    int total_length;
-    int total_kmers = 0;  // total number of unambigous kmers
+void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll, mapKmer& kmerUni, mapKmer& kmerStr){
+    uint64_t total_length;
+    uint64_t total_kmers = 0;  // total number of unambigous kmers
     int unique_kmers = 0; // total number of unique kmers
 
     FILE *fastaFile;
@@ -202,35 +202,36 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
     kmerReader reader(length,fastaFile); //  initialize the kmer string and kmer
     while (!reader.eos) { 
         if (!reader.is_ambiguous) {
-            // THERE IS A BUG HERE
             // keep track of unique kmers and remove keys of non-unique kmers
             kmerAll[reader.kmer] ++;
             if (kmerAll[reader.kmer] == 1) { 
-                kmerUni[reader.kmer] = reader.pos; 
+                kmerUni[reader.kmer] = reader.pos; // position of kmer
+                kmerStr[reader.kmer] = 0;          // on forward strand
             }
             if (kmerAll[reader.kmer] == 2) { 
                 kmerUni.erase(reader.kmer); 
+                kmerStr.erase(reader.kmer); 
             }
-
             kmerAll[reader.revKmer()] ++;
             if (kmerAll[reader.revKmer()] == 1) { 
-                kmerUni[reader.revKmer()] = reader.pos;
+                kmerUni[reader.revKmer()] = reader.pos; // position of kmer
+                kmerStr[reader.revKmer()] = 1;          // on reverse strand
             }
             if (kmerAll[reader.revKmer()] == 2) { 
                 kmerUni.erase(reader.revKmer());
+                kmerStr.erase(reader.revKmer()); 
             }
             // if kmerAll[reader.revKmer()] == kmerAll[reader.kmer], 
             // then this kmer will be removed from the unique list
-
             total_kmers++;
         }  
         reader.getNextKmer(); 
     } 
     total_length = reader.pos + length;
-    printf("total length:\t%d\n",total_length);
-    printf("total kmers: \t%d\n",2*total_kmers);
-    printf("- distinct kmers:\t%d\n", (int) kmerAll.size());
-    printf("- unique kmers:  \t%d\n", (int) kmerUni.size());
+    printf("total length:\t%lld\n",total_length);
+    printf("total kmers: \t%lld\n",2*total_kmers);
+    printf("- number of distinct kmers (mapsize):  \t%d\n", (int) kmerAll.size());
+    printf("- distinct kmers that uniquely appear: \t%d\n", (int) kmerUni.size());
     fclose(fastaFile);
 }
 
@@ -245,21 +246,20 @@ void map_to_file(const char* refFname, const int length, mapKmer hist, const cha
     fname += std::string("hist");
     std::ofstream file;
     file.open(fname.c_str(), std::ios::out | std::ios::binary);
-
     if (!file.is_open()) {
        printf("map_to_file: Cannot open the hist file %s!\n", fname.c_str());
        exit(1);
     }
 
     uint64_t map_size = hist.size();
+    uint64_t kmer;
+    uint64_t val;
     file.write(reinterpret_cast<char*>(&map_size), sizeof(map_size));
     for ( mapKmer::iterator it = hist.begin(); it != hist.end(); ++it) {
-        uint64_t kmer = it->first;
-        uint64_t val = it->second;
+        kmer = it->first;
+        val = it->second;
         file.write(reinterpret_cast<char*>(&kmer), sizeof(kmer));
-        file.write(reinterpret_cast<char*>(&val), sizeof(val));
-        //printbits(kmer,2*length);
-        //printf("\t%d\n",(int)val);
+        file.write(reinterpret_cast<char*>(&val),  sizeof(val));
     }
     file.close();
 }
@@ -276,12 +276,14 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-    mapKmer MapAll, MapUni; 
+    mapKmer MapAll, MapUni, MapStr; 
     const char MapAllName[] = "allCounts";
     const char MapUniName[] = "uniquePos";
+    const char MapStrName[] = "uniqueStd";
     
-    maps_from_fasta(fastaFname, length, MapAll, MapUni); // create kmer maps from fasta file
+    maps_from_fasta(fastaFname, length, MapAll, MapUni, MapStr); // create kmer maps from fasta file
     map_to_file(fastaFname, length, MapAll, MapAllName); // save counts map to .fahist file
     map_to_file(fastaFname, length, MapUni, MapUniName); // save unique pos map to .fahist file
+    map_to_file(fastaFname, length, MapStr, MapStrName); // save unique pos map to .fahist file
     return 0;
 }
