@@ -163,7 +163,7 @@ void kmerReader::printbits(uint64_t binStr, int len){
 
 // TT:print
 void printKmer(char *kmer, uint32_t len){
-    for (int i = 0; i < len; i++) {
+    for (uint i = 0; i < len; i++) {
         printf("%c", kmer[i]);
     }
 }
