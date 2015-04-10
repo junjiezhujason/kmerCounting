@@ -261,6 +261,7 @@ void map_to_file(const char* refFname, const int length, mapKmer hist, const cha
         file.write(reinterpret_cast<char*>(&val),  sizeof(val));
     }
     file.close();
+    printf("map_to_file: file <%s> saved\n", fname.c_str());
 }
 
 int main(int argc, char* argv[]){
