@@ -104,7 +104,7 @@ int kmerReader::getFirstKmer(){
     while(c != '\n' && !feof(_fa)){
         c = (char) getc(_fa);
     }   
-    int i = 0;
+    uint i = 0;
     kmer = 0;
     while(i < _len && c != '>' && !feof(_fa)){ // c must be a base here
         c = (char) getc(_fa);
@@ -228,8 +228,8 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
     } 
     total_length = reader.pos + length;
     total_kmers = 2*total_kmers;
-    printf("total length:\t%lld\n",static_cast<long long> total_length);
-    printf("total kmers: \t%lld\n",static_cast<long long> total_kmers);
+    printf("total length:\t%lld\n",static_cast<long long>(total_length));
+    printf("total kmers: \t%lld\n",static_cast<long long>(total_kmers));
     printf("- number of distinct kmers (mapsize):  \t%d\n", (int) kmerAll.size());
     printf("- distinct kmers that uniquely appear: \t%d\n", (int) kmerUni.size());
     fclose(fastaFile);
@@ -240,7 +240,7 @@ void map_to_file(const char* refFname, const int length, mapKmer hist, const cha
     // modified Victoria's code
     std::string fname(histName);
     fname += std::string("_");
-    fname += std::to_string(static_cast<long long>length);
+    fname += std::to_string(static_cast<long long>(length));
     fname += std::string("mer_");
     fname += std::string(refFname);
     fname += std::string("hist");
