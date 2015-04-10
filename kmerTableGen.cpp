@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <stdint.h>
 // gcc kmerTableGen.cpp -o kmerTableGen -lstdc++
 // ./kmerTableGen 
 
