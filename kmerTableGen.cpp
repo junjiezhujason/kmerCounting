@@ -238,12 +238,11 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
 
 void map_to_file(const char* refFname, const int length, mapKmer hist, const char* histName){
     // modified Victoria's code
-    std::string fname(histName);
+    std::string fname(refFname);
     fname += std::string("_");
     fname += std::to_string(static_cast<long long>(length));
-    fname += std::string("mer_");
-    fname += std::string(refFname);
-    fname += std::string("hist");
+    fname += std::string(histName);
+
     std::ofstream file;
     file.open(fname.c_str(), std::ios::out | std::ios::binary);
     if (!file.is_open()) {
