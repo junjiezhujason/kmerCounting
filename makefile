@@ -1,4 +1,4 @@
-CFLAGS=		-g -Wall -O2 -ftree-vectorize -std=c++11
+CFLAGS=		-g -Wall -O2 -ftree-vectorize -std=c++0x
 DFLAGS=		-D_FILE_OFFSET_BITS=64 -D_USE_KNETFILE
 
 kmerTableGen: kmerTableGen.o 

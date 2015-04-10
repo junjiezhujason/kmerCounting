@@ -46,7 +46,7 @@ public:
 
 int kmerReader::setLenFilt() {
     lengthfilter = 0;
-    for (int i = 0; i < 2*_len; i++) {
+    for (uint i = 0; i < 2*_len; i++) {
         lengthfilter = lengthfilter | (1LL << i);
         //printbits(lengthfilter,64); printf("\n");
     }
@@ -58,7 +58,7 @@ uint64_t kmerReader::revKmer() {
     uint64_t rKmer = 0;// reverse string
     uint64_t filt = 3; // 0...011
 
-    for (int i = 0; i < _len; i++) {
+    for (uint i = 0; i < _len; i++) {
         // *** DOUBLE-CHECK
         rKmer = rKmer | ((((filt & kmer) >> uint64_t(2*i) ) << 2*(_len-1)) >> 2*i); 
         filt <<= 2;
@@ -203,20 +203,20 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
         if (!reader.is_ambiguous) {
             // keep track of unique kmers and remove keys of non-unique kmers
             kmerAll[reader.kmer] ++;
-            if (kmerAll[reader.kmer] == 1) { 
+            if (kmerAll[reader.kmer] == (unsigned)1) { 
                 kmerUni[reader.kmer] = reader.pos; // position of kmer
                 kmerStr[reader.kmer] = 0;          // on forward strand
             }
-            if (kmerAll[reader.kmer] == 2) { 
+            if (kmerAll[reader.kmer] == (unsigned)2) { 
                 kmerUni.erase(reader.kmer); 
                 kmerStr.erase(reader.kmer); 
             }
             kmerAll[reader.revKmer()] ++;
-            if (kmerAll[reader.revKmer()] == 1) { 
+            if (kmerAll[reader.revKmer()] == (unsigned)1) { 
                 kmerUni[reader.revKmer()] = reader.pos; // position of kmer
                 kmerStr[reader.revKmer()] = 1;          // on reverse strand
             }
-            if (kmerAll[reader.revKmer()] == 2) { 
+            if (kmerAll[reader.revKmer()] == (unsigned)2) { 
                 kmerUni.erase(reader.revKmer());
                 kmerStr.erase(reader.revKmer()); 
             }
@@ -227,8 +227,9 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
         reader.getNextKmer(); 
     } 
     total_length = reader.pos + length;
-    printf("total length:\t%lld\n",total_length);
-    printf("total kmers: \t%lld\n",2*total_kmers);
+    total_kmers = 2*total_kmers;
+    printf("total length:\t%lld\n",static_cast<long long> total_length);
+    printf("total kmers: \t%lld\n",static_cast<long long> total_kmers);
     printf("- number of distinct kmers (mapsize):  \t%d\n", (int) kmerAll.size());
     printf("- distinct kmers that uniquely appear: \t%d\n", (int) kmerUni.size());
     fclose(fastaFile);
@@ -239,7 +240,7 @@ void map_to_file(const char* refFname, const int length, mapKmer hist, const cha
     // modified Victoria's code
     std::string fname(histName);
     fname += std::string("_");
-    fname += std::to_string(length);
+    fname += std::to_string(static_cast<long long>length);
     fname += std::string("mer_");
     fname += std::string(refFname);
     fname += std::string("hist");
