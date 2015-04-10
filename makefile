@@ -1,11 +1,11 @@
-CFLAGS=		-g -Wall -O2 -ftree-vectorize
+CFLAGS=		-g -Wall -O2 -ftree-vectorize -std=c++11
 DFLAGS=		-D_FILE_OFFSET_BITS=64 -D_USE_KNETFILE
 
 kmerTableGen: kmerTableGen.o 
-	g++ $(CFLAGS) $(DFLAGS) kmerTableGen.o -lz -pthread -lstdc++ -o kmerTableGen
+	gcc $(CFLAGS) $(DFLAGS) kmerTableGen.o -lz -pthread -lstdc++ -o kmerTableGen
 
 kmerTableGen.o: kmerTable.cpp
-	g++ $(CFLAGS) $(DFLAGS) -c kmerTableGen.cpp
+	gcc $(CFLAGS) $(DFLAGS) -c kmerTableGen.cpp
 
 clean:
 	rm -f kmerTableGen
