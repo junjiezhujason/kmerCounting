@@ -30,8 +30,8 @@ public:
     //char *kmerChar;
     uint64_t kmer;
     uint64_t pos;
-    kmerReader(uint32_t len, FILE *fa) 
-        :  _len(len), _fa(fa) {
+    kmerReader(FILE *fa, uint32_t len) 
+        :  _fa(fa), _len(len) {
         // kmerChar = (char*) malloc(_len*sizeof(char));
         is_ambiguous = false;   // *** no N until I see N
         _countDown = 0;
@@ -190,7 +190,6 @@ void printbits(uint64_t binStr, int len){
 void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll, mapKmer& kmerUni, mapKmer& kmerStr){
     uint64_t total_length;
     uint64_t total_kmers = 0;  // total number of unambigous kmers
-    int unique_kmers = 0; // total number of unique kmers
 
     FILE *fastaFile;
     fastaFile = fopen(fastaFname,"r"); 
@@ -199,7 +198,7 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
        exit(1);
     }
 
-    kmerReader reader(length,fastaFile); //  initialize the kmer string and kmer
+    kmerReader reader(fastaFile,length); //  initialize the kmer string and kmer
     while (!reader.eos) { 
         if (!reader.is_ambiguous) {
             // keep track of unique kmers and remove keys of non-unique kmers

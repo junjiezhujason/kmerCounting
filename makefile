@@ -4,7 +4,7 @@ DFLAGS=		-D_FILE_OFFSET_BITS=64 -D_USE_KNETFILE
 kmerTableGen: kmerTableGen.o 
 	gcc $(CFLAGS) $(DFLAGS) kmerTableGen.o -lz -pthread -lstdc++ -o kmerTableGen
 
-kmerTableGen.o: kmerTable.cpp
+kmerTableGen.o: kmerTableGen.cpp
 	gcc $(CFLAGS) $(DFLAGS) -c kmerTableGen.cpp
 
 clean:
