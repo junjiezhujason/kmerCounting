@@ -7,11 +7,11 @@
 // gcc kmerTableGen.cpp -o kmerTableGen -lstdc++
 // ./kmerTableGen 
 
-typedef std::map <uint64_t, uint64_t> mapKmer;
+typedef std::map <uint64_t, uint32_t> mapKmer;
 
 class kmerReader{ // a file reader that goes through kmers
     FILE *_fa;
-    const uint32_t _len;
+    const uint32_t _len;  // length of the kmer
     uint64_t encode(char base);
     // bool _eos; // end of sequence
     int getFirstKmer(); // *** to be incoporated in construction
@@ -29,7 +29,7 @@ public:
     bool eos;          // whether the kmer is the last one or not
     //char *kmerChar;
     uint64_t kmer;
-    uint64_t pos;
+    uint32_t pos;
     kmerReader(FILE *fa, uint32_t len) 
         :  _fa(fa), _len(len) {
         // kmerChar = (char*) malloc(_len*sizeof(char));
@@ -197,12 +197,17 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
        printf("fasta2ref: Cannot open FASTA file: %s!\n", fastaFname);
        exit(1);
     }
-
+    printf("============================\nstart reading <%s>.\n", fastaFname);
+    uint kmercount_temp; 
     kmerReader reader(fastaFile,length); //  initialize the kmer string and kmer
     while (!reader.eos) { 
+        if (reader.pos % 1000000 == 0) {
+            printf("%d bases read...\n", reader.pos);
+        }
         if (!reader.is_ambiguous) {
             // keep track of unique kmers and remove keys of non-unique kmers
             kmerAll[reader.kmer] ++;
+            kmercount_temp = kmerAll[reader.kmer];
             if (kmerAll[reader.kmer] == (unsigned)1) { 
                 kmerUni[reader.kmer] = reader.pos; // position of kmer
                 kmerStr[reader.kmer] = 0;          // on forward strand
@@ -226,15 +231,17 @@ void maps_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll,
         }  
         reader.getNextKmer(); 
     } 
+    fclose(fastaFile);
     total_length = reader.pos + length;
     total_kmers = 2*total_kmers;
+    
+    printf("done.\n-----------------\n");
     printf("total length:\t%lld\n",static_cast<long long>(total_length));
     printf("total kmers: \t%lld\n",static_cast<long long>(total_kmers));
     printf("- number of distinct kmers (mapsize):  \t%d\n", (int) kmerAll.size());
     printf("- distinct kmers that uniquely appear: \t%d\n", (int) kmerUni.size());
-    fclose(fastaFile);
+    
 }
-
 
 void map_to_file(const char* refFname, const int length, mapKmer hist, const char* histName){
     // modified Victoria's code
