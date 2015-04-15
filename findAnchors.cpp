@@ -67,7 +67,7 @@ void printMapinfo(umapKmer m) { // print all kmers in an unordered map
         kmer = it->first;
         val = it->second;
         printbits32(kmer);
-        printf("\t%d\n",(int)val);
+        printf("\t%d\n",(uint)val);
     }
 }
 
@@ -127,6 +127,6 @@ int main(int argc, char* argv[]){
 
     std::cout<<"Duration: "<< duration <<' s.\n';
 
-    printMapinfo(uniqueKmers);
+    //printMapinfo(uniqueKmers);
 
 }
