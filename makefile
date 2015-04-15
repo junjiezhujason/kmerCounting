@@ -7,7 +7,16 @@ kmerTableGen: kmerTableGen.o
 kmerTableGen.o: kmerTableGen.cpp
 	gcc $(CFLAGS) $(DFLAGS) -c kmerTableGen.cpp
 
+findAnchors: findAnchors.o 
+	gcc $(CFLAGS) $(DFLAGS) findAnchors.o -lz -pthread -lstdc++ -o findAnchors
+	
+findAnchors.o: findAnchors.cpp
+	gcc $(CFLAGS) $(DFLAGS) -c findAnchors.cpp
+
+
+
 clean:
 	rm -f kmerTableGen
 	rm -f kmerTableGen.o
-	rm -f kmerTableGenhelper.o
+	rm -f findAnchors
+	rm -f findAnchors.o

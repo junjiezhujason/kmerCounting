@@ -1,0 +1,39 @@
+--------k12---------
+total length:   3095677412
+total kmers:    5722647042
+- number of distinct kmers (mapsize):   16731987
+- distinct kmers that uniquely appear:  94608
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_12allCounts> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_12uniquePos> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_12uniqueStd> saved
+--------k13---------
+total length:   3095677412
+total kmers:    5722646400
+- number of distinct kmers (mapsize):   64736470
+- distinct kmers that uniquely appear:  2666854
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_13allCounts> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_13uniquePos> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_13uniqueStd> saved
+---------------------------------------------
+execution time: 20281 s.
+--------k14---------
+total length:   3095677412
+total kmers:    5722645758
+- number of distinct kmers (mapsize):   227412830
+- distinct kmers that uniquely appear:  30801254
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_14allCounts> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_14uniquePos> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_14uniqueStd> saved
+---------------------------------------------
+execution time: 27145 s.
+--------k15---------
+total length:   3095677412
+total kmers:    5722645116
+- number of distinct kmers (mapsize):   667266728
+- distinct kmers that uniquely appear:  171591520
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_15allCounts> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_15uniquePos> saved
+map_to_file: file </scail/u/junjiezhu/data/hg19/hg19.fa_15uniqueStd> saved
+---------------------------------------------
+execution time: 32761 s.
+~                           
