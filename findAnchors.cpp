@@ -58,7 +58,7 @@ void printbits64(uint64_t binStr){
     }
 }
 
-void printMapinfo(umapKmer m, int len) { // print all kmers in an unordered map 
+void printMapinfo(umapKmer m) { // print all kmers in an unordered map 
     uint32_t kmer;
     uint32_t val;
 
@@ -127,6 +127,6 @@ int main(int argc, char* argv[]){
 
     std::cout<<"Duration: "<< duration <<' s.\n';
 
-    //printMapinfo(uniqueKmers);
+    printMapinfo(uniqueKmers);
 
 }
