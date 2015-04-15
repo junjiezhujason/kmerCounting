@@ -67,7 +67,7 @@ void printMapinfo(umapKmer m) { // print all kmers in an unordered map
         kmer = it->first;
         val = it->second;
         printbits32(kmer);
-        printf("\t%d\n",(uint)val);
+        printf("\t%u\n", val);
     }
 }
 
