@@ -125,8 +125,8 @@ int main(int argc, char* argv[]){
 
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
-    std::cout<<"Duration: "<< duration <<' s.\n';
+    std::cout<<"Duration: \n"<< duration <<' s.\n';
 
-    //printMapinfo(uniqueKmers);
+    printMapinfo(uniqueKmers);
 
 }
