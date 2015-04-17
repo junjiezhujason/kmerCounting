@@ -1,0 +1,97 @@
+#include "findAnchors.h"
+
+readwKmer::readwKmer(uint32_t readLen, uint32_t skip, uint32_t kmerLen) {
+	// constructor
+	// set up the private parameters
+	_readLen = readLen;
+	_skip = skip;
+	_kmerLen = kmerLen;
+	// initialize public parameters
+	// initialize map?
+}
+
+readwKmer::~readwKmer(void) {
+	// destructor
+	printf("Object is deleted.");
+	// destroy map?
+}
+
+int readwKmer::init(read_str str) {
+	kmerpos = 0;
+	numAnchors = 0;
+	anchored = false;
+	anchorPos = 0; 
+	seq.assign(str);
+	matches.clear();
+	eor = false;
+	encodeKmer();
+
+
+	return 0;
+}
+
+int readwKmer::encodeKmer(void) {
+	// TO DO: speed up this part of the code if necessary
+	// use kmerpos and seq to get the kmer in bits
+	kmer = 0; // initialize the kmer to be zero
+	kmer_str = seq.substr(kmerpos,_kmerLen);
+	for (char& c : kmer_str) { // range-based for loop in C++11
+		kmer =  kmer << 2 | encode(c);
+	}
+	return 0;
+}
+
+int readwKmer::encode(char base) {
+    if      (base == 'T' || base == 't') {return 3;} // 11
+    else if (base == 'G' || base == 'g') {return 2;} // 10
+    else if (base == 'C' || base == 'c') {return 1;} // 01
+    else {return 0;} // A and other letters chars are all 0 (but we have hasN to control)
+}
+
+int readwKmer::getNextKmer(void) {
+	// skip the number of bases to get the next kmer if eor is false
+	kmerpos = kmerpos + _skip;
+	if (kmerpos > _readLen - _kmerLen) { // kmerpos near the end
+		eor = true;
+	} 
+	else {
+		encodeKmer();
+	}
+	return 0;
+}
+
+int readwKmer::lookupKmer(umapKmer m) {
+	int posRef = m[kmer];
+	if (posRef > 0) { // if the kmer is unique in ref
+		anchored = true; // found an anchor
+		numAnchors ++;
+		matches[kmerpos] = posRef;
+	}
+	return 0;
+}
+
+int readwKmer::determineAnchor(void) {
+	// TO DO: handle matches to update anchorPos 
+
+	return 0;
+}
+
+int readwKmer::printAll(void) {
+	printf("%u\t", kmerpos);
+	printbits32(kmer);
+	printf("\t%s\t", kmer_str.c_str());
+	printf("\t%u\n", numAnchors);
+	
+	// print the map of matches
+	uint32_t kpos;
+    uint32_t val;
+    std::map<uint32_t, uint32_t>::iterator it;
+    for (it = matches.begin(); it != matches.end(); ++it) {
+        kpos = it->first;
+        val = it->second;
+        printf("\t\tread position: %u,", kpos);
+        printf(" anchored at reference position: %u\n", val);
+    }
+
+	return 0;
+}
