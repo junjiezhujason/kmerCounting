@@ -23,7 +23,9 @@ int main(int argc, char* argv[]){
     }
 
     std::string bname(bamFname);
+    
     BamTools::BamReader reader;
+
     if (!reader.Open(bname)) {
         std::cerr << "Could not open input BAM file." << std::endl;
         exit(1);
@@ -33,7 +35,7 @@ int main(int argc, char* argv[]){
     // load the unique kmers into an unordered map 
     
     BamTools::BamAlignment al;
-    readwKmer read(rLen, intvl, k);
+    // readwKmer read(rLen, intvl, k);
 
     umapKmer uniqueKmers; // unique kmer -> string
     mapCount MapWell;     // barcode -> number of anchored reads
@@ -124,5 +126,6 @@ int main(int argc, char* argv[]){
     // /*code here*/
     //duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     //std::cout<<"Duration: "<< duration <<" s.\n";
+    reader.Close();
 }
 
