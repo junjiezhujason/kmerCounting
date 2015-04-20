@@ -44,6 +44,7 @@ int file_to_wellmap(const char* fname, mapCount& m) {
     while (std::getline (file,line)) {
         m[line] = 0;
     }
+    file.close();
     return 0;
 }
 

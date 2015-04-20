@@ -54,6 +54,7 @@ int main(int argc, char* argv[]){
     std::cout<<"Duration: "<< duration <<" s. - ";
     printf("kmer map loaded.\n");
 
+    /*
     std::clock_t start2;
     file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
     duration = ( std::clock() - start2 ) / (double) CLOCKS_PER_SEC;
@@ -70,7 +71,7 @@ int main(int argc, char* argv[]){
     // std::list<std::string>::iterator it;
     // read_str buffer;
 
-    /*
+    
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
         read.init(al.QueryBases);                   // extract the read from entry
