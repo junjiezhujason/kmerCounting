@@ -31,11 +31,13 @@ int main(int argc, char* argv[]){
 
 
     // load the unique kmers into an unordered map 
-    // takes ~1min and ~8gb to load unique 15mers
+    
     BamTools::BamAlignment al;
+    readwKmer read(rLen, intvl, k);
+
     umapKmer uniqueKmers; // unique kmer -> string
     mapCount MapWell;     // barcode -> number of anchored reads
-    readwKmer read(rLen, intvl, k);
+    
     uint32_t totalR = 0;        // total number of reads
     uint32_t anchoredR = 0;     // total number of anchored reads
     uint32_t loReads = 0;       // number of leftover reads 
@@ -43,10 +45,20 @@ int main(int argc, char* argv[]){
     char tagTypeName;
     barcode_str tagData;
 
+    double duration;
 
+    // takes ~1min and ~8gb to load unique 15mers
+    std::clock_t start;
 	file_to_unimap(mapFname, uniqueKmers, k); // load uniqueKmerMap (unordered)
-    file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
+    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    std::cout<<"Duration: "<< duration <<" s. - ";
+    printf("kmer map loaded.\n");
 
+    std::clock_t start2;
+    file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
+    duration = ( std::clock() - start2 ) / (double) CLOCKS_PER_SEC;
+    std::cout<<"Duration: "<< duration <<" s. - \n";
+    printf("well map loaded.\n");
     // printMapinfo(uniqueKmers); // print the kmer keys and values
 
     // test case
@@ -58,7 +70,7 @@ int main(int argc, char* argv[]){
     // std::list<std::string>::iterator it;
     // read_str buffer;
 
-
+    /*
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
         read.init(al.QueryBases);                   // extract the read from entry
@@ -98,9 +110,11 @@ int main(int argc, char* argv[]){
     map_to_file(bamFname, MapWell, loReads, loAnchored);
 
     reader.Close();
-
+    
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
+
+    */
 
     // To test how long: use
     //std::clock_t start;
