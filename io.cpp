@@ -12,12 +12,12 @@ int file_to_unimap(const char* fname, umapKmer& m, const int k){
 
 	file.open(fname, std::ios::in | std::ios::binary);
 	if (!file.is_open()) {
-       printf("file_to_map: Cannot open the file %s!\n", fname);
+       printf("file_to_unimap: Cannot open the file %s!\n", fname);
        exit(1);
     }
 
     if (k > 16){
-        printf("file_to_map: k must be no more than 16");
+        printf("file_to_unimap: k must be no more than 16");
         exit(1);
     }
 
@@ -30,6 +30,7 @@ int file_to_unimap(const char* fname, umapKmer& m, const int k){
         m[kmer] = pos;
     }
 	file.close();
+    printf("Finished loading file %s!\n", fname);
     return 0;
 }
 
@@ -45,6 +46,7 @@ int file_to_wellmap(const char* fname, mapCount& m) {
         m[line] = 0;
     }
     file.close();
+    printf("Finished loading file %s!\n", fname);
     return 0;
 }
 

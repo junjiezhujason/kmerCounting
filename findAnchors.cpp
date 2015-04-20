@@ -24,17 +24,20 @@ int main(int argc, char* argv[]){
 
     std::string bname(bamFname);
     
+    /*
     BamTools::BamReader reader;
 
     if (!reader.Open(bname)) {
         std::cerr << "Could not open input BAM file." << std::endl;
         exit(1);
     }
+    BamTools::BamAlignment al;
+    */
 
 
     // load the unique kmers into an unordered map 
     
-    BamTools::BamAlignment al;
+    
     // readwKmer read(rLen, intvl, k);
 
     umapKmer uniqueKmers; // unique kmer -> string
@@ -112,11 +115,10 @@ int main(int argc, char* argv[]){
 
     map_to_file(bamFname, MapWell, loReads, loAnchored);
 
-    reader.Close();
     
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
-
+    reader.Close();
     */
 
     // To test how long: use
@@ -126,6 +128,5 @@ int main(int argc, char* argv[]){
     // /*code here*/
     //duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     //std::cout<<"Duration: "<< duration <<" s.\n";
-    reader.Close();
 }
 
