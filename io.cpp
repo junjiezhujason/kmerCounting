@@ -1,7 +1,7 @@
 #include "findAnchors.h"
 
 
-int file_to_map(const char* fname, umapKmer& m, const int k){
+int file_to_unimap(const char* fname, umapKmer& m, const int k){
 	std::ifstream file;
     uint64_t kmer64;
     uint32_t kmer;
@@ -31,4 +31,52 @@ int file_to_map(const char* fname, umapKmer& m, const int k){
     }
 	file.close();
     return 0;
+}
+
+int file_to_wellmap(const char* fname, mapCount& m) {
+    std::string line;
+    std::ifstream file (fname);
+    if (!file.is_open()) {
+       printf("file_to_map: Cannot open the file %s!\n", fname);
+       exit(1);
+    }
+
+    while (std::getline (file,line)) {
+        m[line] = 0;
+    }
+    return 0;
+}
+
+int map_to_file(const char* bFname, mapCount m, const int readsleft, const int areadsleft) {
+    std::string fname1(bFname);   
+    fname1 += std::string("_wacount"); 
+    std::ofstream file1 (fname1.c_str());
+    if (!file1.is_open()) {
+       printf("map_to_file: Cannot open the file %s!\n", fname1.c_str());
+       exit(1);
+    }
+    std::string fname3(bFname);   
+    fname3 += std::string("_wasummary"); 
+    std::ofstream file3 (fname3.c_str());
+    if (!file3.is_open()) {
+       printf("map_to_file: Cannot open the file %s!\n", fname3.c_str());
+       exit(1);
+    }
+
+    uint32_t wellswanchors = 0;
+    std::string bc; // barcode
+    uint32_t ct;    // count
+    for ( mapCount::iterator it = m.begin(); it != m.end(); ++it) {
+        bc = it->first;
+        ct = it->second;
+        file1 << ct << "\n"; 
+
+        if (ct > 0) {
+            wellswanchors ++;
+        }
+    }
+
+    file3 << "number of wells with anchors: " <<  wellswanchors << " / " << m.size() <<"\n";
+    file3 << "number of leftover reads anchored: " << areadsleft << "/ " << readsleft << "\n";
+
 }

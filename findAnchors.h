@@ -16,9 +16,12 @@
 #include <list>
 
 
-typedef std::unordered_map <uint32_t, uint32_t> umapKmer;
 typedef std::string barcode_str;
 typedef std::string read_str;
+typedef std::unordered_map <uint32_t, uint32_t> umapKmer;
+typedef std::map<barcode_str, uint32_t> mapCount;           // counts the numbers of barcodes
+
+
 
 
 // Question: any things special about handling pair end reads?
@@ -56,7 +59,10 @@ public:
 };
 
 // io.cpp
-int file_to_map(const char* fname, umapKmer& m, const int k);
+int file_to_unimap(const char* fname, umapKmer& m, const int k);
+int file_to_wellmap(const char* fname, mapCount& m);
+int map_to_file(const char* bFname, mapCount m, const int readsleft, const int areadsleft);
+
 
 // printer.cpp - used for testing and displaying
 int printbits(uint64_t binStr, int len);

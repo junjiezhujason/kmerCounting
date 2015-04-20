@@ -12,8 +12,7 @@ readwKmer::readwKmer(uint32_t readLen, uint32_t skip, uint32_t kmerLen) {
 
 readwKmer::~readwKmer(void) {
 	// destructor
-	printf("Object is deleted.");
-	// destroy map?
+	// printf("Object is deleted.\n");
 }
 
 int readwKmer::init(read_str str) {
@@ -77,10 +76,10 @@ int readwKmer::determineAnchor(void) {
 }
 
 int readwKmer::printAll(void) {
-	printf("%u\t", kmerpos);
-	printbits32(kmer);
-	printf("\t%s\t", kmer_str.c_str());
-	printf("\t%u\n", numAnchors);
+	//printf("%u\t", kmerpos);
+	//printbits32(kmer);
+	printf("\t......%s\t", kmer_str.c_str());
+	printf("\t number of anchors: %u\n", numAnchors);
 	
 	// print the map of matches
 	uint32_t kpos;
@@ -89,7 +88,7 @@ int readwKmer::printAll(void) {
     for (it = matches.begin(); it != matches.end(); ++it) {
         kpos = it->first;
         val = it->second;
-        printf("\t\tread position: %u,", kpos);
+        printf("\tread position: %u,", kpos);
         printf(" anchored at reference position: %u\n", val);
     }
 

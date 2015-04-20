@@ -1,56 +1,106 @@
 #include "findAnchors.h"
 
 int main(int argc, char* argv[]){
-    char* fName;
+    char* bamFname;
+    char* mapFname;
+    char* wellFname;
     int k; 
-    if ( argc == 3 ) {
-            fName  = argv[1] ;
-            k = atoi(argv[2]); // specify k for error control
+    int rLen; // = 19;
+    int intvl; // = 2;
+    char* tName; // MD or BX
+
+    if ( argc == 8 ) {
+            bamFname  = argv[1];
+            mapFname = argv[2];
+            k = atoi(argv[3]); // specify k for error control
+            rLen = atoi(argv[4]); 
+            intvl = atoi(argv[5]); 
+            tName = argv[6]; 
+            wellFname = argv[7];
     } else {
         std::cerr << "Wrong number of arguments." << std::endl;
-        return 1;
+        exit(1);
     }
 
-    umapKmer uniqueKmers;
+    std::string bname(bamFname);
+    BamTools::BamReader reader;
+    if (!reader.Open(bname)) {
+        std::cerr << "Could not open input BAM file." << std::endl;
+        exit(1);
+    }
+
+
     // load the unique kmers into an unordered map 
     // takes ~1min and ~8gb to load unique 15mers
-	file_to_map(fName, uniqueKmers, k); // load uniqueKmerMap
-
-    // Testing:
-    printMapinfo(uniqueKmers); // print the kmer keys and values
-
-    // *** make as argument
-    int rLen = 19;
-    int intvl = 2;
-
+    BamTools::BamAlignment al;
+    umapKmer uniqueKmers; // unique kmer -> string
+    mapCount MapWell;     // barcode -> number of anchored reads
     readwKmer read(rLen, intvl, k);
+    uint32_t totalR = 0;        // total number of reads
+    uint32_t anchoredR = 0;     // total number of anchored reads
+    uint32_t totalW = 0;        // total number of wells
+    uint32_t anchoredW = 0;     // total number of anchored wells
+    uint32_t loReads = 0;       // number of leftover reads 
+    uint32_t loAnchored = 0;    // number of leftover reads anchored
+    char tagTypeName;
+    barcode_str tagData;
 
-    uint32_t totalR = 0;
-    uint32_t anchoredR = 0; 
+
+	file_to_unimap(mapFname, uniqueKmers, k); // load uniqueKmerMap (unordered)
+    file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
+
+    // printMapinfo(uniqueKmers); // print the kmer keys and values
 
     // test case
-    std::list<std::string> LL;
-    LL.push_back(std::string("GAAAAAAAAAAAAAAAAAA"));
-    LL.push_back(std::string("AAAAAAAAAAAAAAAATTT")); 
-    LL.push_back(std::string("AAAAAAAAAAAAATTTTTT"));
-    LL.push_back(std::string("AAAAAAAAAATTTTTTTTT"));
-    std::list<std::string>::iterator it;
+    // std::list<std::string> LL;
+    // LL.push_back(std::string("GAAAAAAAAAAAAAAAAAA"));
+    // LL.push_back(std::string("AAAAAAAAAAAAAAAATTT")); 
+    // LL.push_back(std::string("AAAAAAAAAAAAATTTTTT"));
+    // LL.push_back(std::string("AAAAAAAAAATTTTTTTTT"));
+    // std::list<std::string>::iterator it;
+    // read_str buffer;
 
-    std::string buffer;
-    for (it = LL.begin(); it != LL.end(); ++it) {
-        buffer = *it;
-        read.init(buffer);
-        while (!read.eor) {
+
+    while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
+        totalR ++;
+        read.init(al.QueryBases);                   // extract the read from entry
+         while (!read.eor) {
             read.lookupKmer(uniqueKmers);
-            read.printAll();
+            // read.printAll();
             read.getNextKmer();
         }
         read.determineAnchor();
-        totalR ++;
+        
         if (read.anchored) {
             anchoredR ++;
+            // printf("Anchored Read #: %u; \t", totalR);
+            // read.printAll();
+
+        }
+
+        if (al.GetTagType(tName, tagTypeName)) {    // ensure that tagType matches
+            if (tagTypeName == 'Z') {               // verify that type is correct
+                al.GetTag(tName, tagData);          // extract the tag value from entry
+                if (read.anchored) {
+                    MapWell[tagData] ++;            // increment count
+                }   
+            } 
+            else {
+                printf("Warning: tagType is not Z - entry ignored \n");
+                loReads ++;
+                if (read.anchored) { loAnchored ++; }  
+            }  
+        } else {
+            loReads ++;
+            if (read.anchored) { loAnchored ++; }   
+            // printf("Without BC - Read #: %u\n", totalR);
         }
     }
+
+    map_to_file(bamFname, MapWell, loReads, loAnchored);
+
+    reader.Close();
+
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
 
