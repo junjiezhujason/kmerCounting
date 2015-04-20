@@ -38,8 +38,6 @@ int main(int argc, char* argv[]){
     readwKmer read(rLen, intvl, k);
     uint32_t totalR = 0;        // total number of reads
     uint32_t anchoredR = 0;     // total number of anchored reads
-    uint32_t totalW = 0;        // total number of wells
-    uint32_t anchoredW = 0;     // total number of anchored wells
     uint32_t loReads = 0;       // number of leftover reads 
     uint32_t loAnchored = 0;    // number of leftover reads anchored
     char tagTypeName;
@@ -73,8 +71,8 @@ int main(int argc, char* argv[]){
         
         if (read.anchored) {
             anchoredR ++;
-            // printf("Anchored Read #: %u; \t", totalR);
-            // read.printAll();
+            //printf("Anchored Read #: %u; \t", totalR);
+            //read.printAll();
 
         }
 

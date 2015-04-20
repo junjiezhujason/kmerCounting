@@ -21,7 +21,7 @@ int readwKmer::init(read_str str) {
 	anchored = false;
 	anchorPos = 0; 
 	seq.assign(str);
-	matches.clear();
+	matches.clear(); 
 	eor = false;
 	encodeKmer();
 
@@ -34,8 +34,8 @@ int readwKmer::encodeKmer(void) {
 	// use kmerpos and seq to get the kmer in bits
 	kmer = 0; // initialize the kmer to be zero
 	kmer_str = seq.substr(kmerpos,_kmerLen);
-	for (char& c : kmer_str) { // range-based for loop in C++11
-		kmer =  kmer << 2 | encode(c);
+	for (uint32_t i = 0; i < _kmerLen; ++i) { // range-based for loop in C++11
+		kmer =  kmer << 2 | encode(kmer_str.at(i));
 	}
 	return 0;
 }

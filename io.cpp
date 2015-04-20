@@ -79,4 +79,5 @@ int map_to_file(const char* bFname, mapCount m, const int readsleft, const int a
     file3 << "number of wells with anchors: " <<  wellswanchors << " / " << m.size() <<"\n";
     file3 << "number of leftover reads anchored: " << areadsleft << "/ " << readsleft << "\n";
 
+    return 0;
 }
