@@ -24,7 +24,6 @@ int main(int argc, char* argv[]){
 
     std::string bname(bamFname);
     
-    /*
     BamTools::BamReader reader;
 
     if (!reader.Open(bname)) {
@@ -32,7 +31,7 @@ int main(int argc, char* argv[]){
         exit(1);
     }
     BamTools::BamAlignment al;
-    */
+
 
 
     // load the unique kmers into an unordered map 
@@ -59,14 +58,14 @@ int main(int argc, char* argv[]){
     std::cout<<"Duration: "<< duration <<" s. - ";
     printf("kmer map loaded.\n");
 
-    /*
+    
     std::clock_t start2;
     file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
     duration = ( std::clock() - start2 ) / (double) CLOCKS_PER_SEC;
     std::cout<<"Duration: "<< duration <<" s. - \n";
     printf("well map loaded.\n");
     // printMapinfo(uniqueKmers); // print the kmer keys and values
-
+    /*
     // test case
     // std::list<std::string> LL;
     // LL.push_back(std::string("GAAAAAAAAAAAAAAAAAA"));
@@ -118,9 +117,10 @@ int main(int argc, char* argv[]){
     
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
-    reader.Close();
     */
 
+    reader.Close();
+    
     // To test how long: use
     //std::clock_t start;
     //double duration;
