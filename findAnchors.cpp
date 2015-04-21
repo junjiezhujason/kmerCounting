@@ -51,6 +51,7 @@ int main(int argc, char* argv[]){
     double duration;
 
     // takes ~1min and ~8gb to load unique 15mers
+    /*
     std::clock_t start;
 	file_to_unimap(mapFname, uniqueKmers, k); // load uniqueKmerMap (unordered)
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
@@ -74,11 +75,12 @@ int main(int argc, char* argv[]){
     // std::list<std::string>::iterator it;
     // read_str buffer;
 
-    
+    */
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
-        printf("read number: %u\n", totalR);
+        printf("read number: %u;", totalR);
         read.init(al.QueryBases);                   // extract the read from entry
+        printf("\t %s \n", al.QueryBases.c_str());
         while (!read.eor) {
             read.lookupKmer(uniqueKmers);
             // read.printAll();
