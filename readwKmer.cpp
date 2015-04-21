@@ -32,7 +32,7 @@ int readwKmer::encodeKmer(void) {
 	// use kmerpos and seq to get the kmer in bits
 	kmer = 0; // initialize the kmer to be zero
 	kmer_str = seq.substr(kmerpos,_kmerLen);
-	for (uint32_t i = 0; i < _kmerLen; ++i) { // range-based for loop in C++11
+	for (uint32_t i = 0; i < _kmerLen; ++i) { 
 		kmer =  kmer << 2 | encode(kmer_str.at(i));
 	}
 	return 0;
