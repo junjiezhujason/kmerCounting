@@ -77,7 +77,7 @@ int main(int argc, char* argv[]){
     
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
-        printf("read number: \u\n", totalR);
+        printf("read number: %u\n", totalR);
         read.init(al.QueryBases);                   // extract the read from entry
         while (!read.eor) {
             read.lookupKmer(uniqueKmers);
