@@ -50,7 +50,7 @@ public:
 
     int init(read_str str);
     int getNextKmer();
-    int lookupKmer(umapKmer m); 
+    int lookupKmer(umapKmer& m); 
     int printAll(void);
 
     	// look up the unique map, update matches, numAnchors, anchored

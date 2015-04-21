@@ -24,8 +24,6 @@ int readwKmer::init(read_str str) {
 	matches.clear(); 
 	eor = false;
 	encodeKmer();
-
-
 	return 0;
 }
 
@@ -59,12 +57,11 @@ int readwKmer::getNextKmer(void) {
 	return 0;
 }
 
-int readwKmer::lookupKmer(umapKmer m) {
-	int posRef = m[kmer];
-	if (posRef > 0) { // if the kmer is unique in ref
+int readwKmer::lookupKmer(umapKmer& m) {
+	if (m.count(kmer) > 0) { // if the kmer is a key in the unique kmer map
 		anchored = true; // found an anchor
 		numAnchors ++;
-		matches[kmerpos] = posRef;
+		matches[kmerpos] = m[kmer]; // kmer pos in read -> position in reference
 	}
 	return 0;
 }
@@ -91,6 +88,5 @@ int readwKmer::printAll(void) {
         printf("\tread position: %u,", kpos);
         printf(" anchored at reference position: %u\n", val);
     }
-
 	return 0;
 }
