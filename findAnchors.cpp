@@ -66,8 +66,9 @@ int main(int argc, char* argv[]){
 
 
 
-    uint32_t stopper = 1000000;
+    uint32_t stopper = 100000; // *** USED FOR TESTING
     uint32_t clipcount = 0;
+
     std::clock_t start;
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
@@ -76,12 +77,9 @@ int main(int argc, char* argv[]){
             break;
         }
 
-        // if (read.clipped) {
-        //     clipcount ++;
-        //     printf("read number: %u;\t", totalR);
-        //     printf("read length: %u;\t", read.readLen);
-        //     printf("%s \n", al.QueryBases.c_str());
-        // }
+        if (read.clipped) {
+            clipcount ++;
+        }
             
         while (!read.eor) {
             read.lookupKmer(uniqueKmers);
@@ -92,10 +90,7 @@ int main(int argc, char* argv[]){
         
         if (read.anchored) {
             anchoredR ++;
-            //printf("Anchored Read #: %u; \t", totalR);
-            //read.printAll();
         }
-
 
         if (al.GetTagType(tName, tagTypeName)) {    // ensure that tagType matches
             if (tagTypeName == 'Z') {               // verify that type is correct
@@ -119,10 +114,10 @@ int main(int argc, char* argv[]){
         }
     }
 
+    map_to_file(bamFname, MapWell, loReads, loAnchored); 
+
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     std::cout<<"Duration: "<< duration <<" s.\n";
-
-    //map_to_file(bamFname, MapWell, loReads, loAnchored); 
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
     printf("* %u ", clipcount);
