@@ -77,7 +77,8 @@ int main(int argc, char* argv[]){
 
     */
 
-    uint32_t stopper = 100000;
+    uint32_t stopper = 1000000;
+    uint32_t clipcount = 0;
 
     std::clock_t start;
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
@@ -88,6 +89,7 @@ int main(int argc, char* argv[]){
         }
 
         if (read.clipped) {
+            clipcount ++;
             printf("read number: %u;\t", totalR);
             printf("read length: %u;\t", read.readLen);
             printf("%s \n", al.QueryBases.c_str());
@@ -135,6 +137,9 @@ int main(int argc, char* argv[]){
     //map_to_file(bamFname, MapWell, loReads, loAnchored); 
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
+
+    printf("* %u ", clipcount);
+    printf("out of %u reads are clipped.\n", totalR);
 
 
     reader.Close();

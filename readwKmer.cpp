@@ -23,11 +23,13 @@ int readwKmer::init(read_str str) {
 	matches.clear(); 
 	seq.assign(str);
 	readLen = str.length();
+	// check is the read is hard clipped 
 	if (readLen < _expLen) {
 		clipped = true;
 	} else {
 		clipped = false;
 	}
+	// catch the case when the read is clipped too much
 	if (readLen < _kmerLen) {
 		eor = true;
 	} else {
