@@ -1,9 +1,9 @@
 #include "findAnchors.h"
 
-readwKmer::readwKmer(uint32_t skip, uint32_t kmerLen) {
+readwKmer::readwKmer(uint32_t expLen, uint32_t skip, uint32_t kmerLen) {
 	// constructor
 	// set up the private parameters
-	//_readLen = readLen;
+	_expLen = expLen;
 	_skip = skip;
 	_kmerLen = kmerLen;
 	// initialize public parameters
@@ -23,6 +23,11 @@ int readwKmer::init(read_str str) {
 	matches.clear(); 
 	seq.assign(str);
 	readLen = str.length();
+	if (readLen < _expLen) {
+		clipped = true;
+	} else {
+		clipped = false;
+	}
 	if (readLen < _kmerLen) {
 		eor = true;
 	} else {

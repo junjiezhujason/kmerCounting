@@ -5,17 +5,18 @@ int main(int argc, char* argv[]){
     char* mapFname;
     char* wellFname;
     int k;    // kmer length
-    //int rLen; // read length
+    int rLen; // read length
     int intvl; // number of bases to skip
     char* tName; // MD or BX
 
-    if ( argc == 7 ) {
+    if ( argc == 8 ) {
             bamFname  = argv[1];
             mapFname = argv[2];
             k = atoi(argv[3]); // specify k for error control
-            intvl = atoi(argv[4]); 
-            tName = argv[5]; 
-            wellFname = argv[6];
+            rLen = atoi(argv[4]);
+            intvl = atoi(argv[5]); 
+            tName = argv[6]; 
+            wellFname = argv[7];
     } else {
         std::cerr << "Wrong number of arguments." << std::endl;
         exit(1);
@@ -35,7 +36,7 @@ int main(int argc, char* argv[]){
     // load the unique kmers into an unordered map 
     
     
-    readwKmer read(intvl, k);
+    readwKmer read(rLen, intvl, k);
 
     umapKmer uniqueKmers; // unique kmer -> string
     mapCount MapWell;     // barcode -> number of anchored reads
@@ -76,7 +77,7 @@ int main(int argc, char* argv[]){
 
     */
 
-    uint32_t stopper = 10000;
+    uint32_t stopper = 100000;
 
     std::clock_t start;
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
@@ -86,9 +87,12 @@ int main(int argc, char* argv[]){
             break;
         }
 
-        printf("read number: %u;\t", totalR);
-        printf("read length: %u;\t", read.readLen);
-        printf("%s \n", al.QueryBases.c_str());
+        if (read.clipped) {
+            printf("read number: %u;\t", totalR);
+            printf("read length: %u;\t", read.readLen);
+            printf("%s \n", al.QueryBases.c_str());
+        }
+            
         while (!read.eor) {
             read.lookupKmer(uniqueKmers);
             // read.printAll();
