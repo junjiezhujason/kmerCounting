@@ -51,19 +51,8 @@ int main(int argc, char* argv[]){
     double duration;
 
     // takes ~1min and ~8gb to load unique 15mers
-   
-    /*
 	file_to_unimap(mapFname, uniqueKmers, k); // load uniqueKmerMap (unordered)
-    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-    std::cout<<"Duration: "<< duration <<" s. - ";
-    printf("kmer map loaded.\n");
-
-    
-    std::clock_t start2;
     file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
-    duration = ( std::clock() - start2 ) / (double) CLOCKS_PER_SEC;
-    std::cout<<"Duration: "<< duration <<" s. - ";
-    printf("well map loaded.\n");
     // printMapinfo(uniqueKmers); // print the kmer keys and values
     
     // test case
@@ -75,11 +64,10 @@ int main(int argc, char* argv[]){
     // std::list<std::string>::iterator it;
     // read_str buffer;
 
-    */
+
 
     uint32_t stopper = 1000000;
     uint32_t clipcount = 0;
-
     std::clock_t start;
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
@@ -88,12 +76,12 @@ int main(int argc, char* argv[]){
             break;
         }
 
-        if (read.clipped) {
-            clipcount ++;
-            printf("read number: %u;\t", totalR);
-            printf("read length: %u;\t", read.readLen);
-            printf("%s \n", al.QueryBases.c_str());
-        }
+        // if (read.clipped) {
+        //     clipcount ++;
+        //     printf("read number: %u;\t", totalR);
+        //     printf("read length: %u;\t", read.readLen);
+        //     printf("%s \n", al.QueryBases.c_str());
+        // }
             
         while (!read.eor) {
             read.lookupKmer(uniqueKmers);
@@ -137,7 +125,6 @@ int main(int argc, char* argv[]){
     //map_to_file(bamFname, MapWell, loReads, loAnchored); 
     printf("* %u ", anchoredR);
     printf("out of %u reads are anchored.\n", totalR);
-
     printf("* %u ", clipcount);
     printf("out of %u reads are clipped.\n", totalR);
 
