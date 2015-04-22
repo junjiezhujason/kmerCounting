@@ -1,9 +1,9 @@
 #include "findAnchors.h"
 
-readwKmer::readwKmer(uint32_t readLen, uint32_t skip, uint32_t kmerLen) {
+readwKmer::readwKmer(uint32_t skip, uint32_t kmerLen) {
 	// constructor
 	// set up the private parameters
-	_readLen = readLen;
+	//_readLen = readLen;
 	_skip = skip;
 	_kmerLen = kmerLen;
 	// initialize public parameters
@@ -20,10 +20,15 @@ int readwKmer::init(read_str str) {
 	numAnchors = 0;
 	anchored = false;
 	anchorPos = 0; 
-	seq.assign(str);
 	matches.clear(); 
-	eor = false;
-	encodeKmer();
+	seq.assign(str);
+	readLen = str.length();
+	if (readLen < _kmerLen) {
+		eor = true;
+	} else {
+		eor = false;
+		encodeKmer();
+	}
 	return 0;
 }
 
@@ -48,7 +53,7 @@ int readwKmer::encode(char base) {
 int readwKmer::getNextKmer(void) {
 	// skip the number of bases to get the next kmer if eor is false
 	kmerpos = kmerpos + _skip;
-	if (kmerpos > _readLen - _kmerLen) { // kmerpos near the end
+	if (kmerpos > readLen - _kmerLen) { // kmerpos near the end
 		eor = true;
 	} 
 	else {
@@ -65,6 +70,7 @@ int readwKmer::lookupKmer(umapKmer& m) {
 	}
 	return 0;
 }
+
 
 int readwKmer::determineAnchor(void) {
 	// TO DO: handle matches to update anchorPos 

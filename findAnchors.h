@@ -27,9 +27,11 @@ typedef std::map<barcode_str, uint32_t> mapCount;           // counts the number
 // Question: any things special about handling pair end reads?
 class readwKmer { 
     //FILE *_fa;       	     // filename frmo which the read comes from
-    uint32_t _readLen; // length of the read
+    //uint32_t _readLen; // length of the read
     uint32_t _skip;    // bases to skip to get the next kmer
     uint32_t _kmerLen; // length of the kmer
+
+    uint32_t kmerpos;   // position of the kmer in the read
     read_str seq;      // sequence of the read
     int encodeKmer();
     int encode(char base);
@@ -37,15 +39,14 @@ class readwKmer {
 public:
     barcode_str bc; // bar code of the read (BX tag in .bam file)
     bool eor; // whether the at the end of the read or not
-
+    uint32_t readLen; // length of the read 
     std::string kmer_str;    // kmer string to be converted to kmer
     uint32_t kmer;  // kmer in bits (k <= 16)
-    uint32_t kmerpos;   // position of the kmer in the read
     uint32_t numAnchors;  // # of kmers anchored in the read
     std::map <uint32_t, uint32_t> matches; // pos in read -> pos in ref 
     bool anchored;  // true if at least one kmer in the read is anchored
     uint32_t anchorPos; // pos in ref where the read is anchored
-    readwKmer(uint32_t readLen, uint32_t skip, uint32_t kmerLen); // constructor
+    readwKmer(uint32_t skip, uint32_t kmerLen); // constructor
     ~readwKmer(); // destructor
 
     int init(read_str str);
