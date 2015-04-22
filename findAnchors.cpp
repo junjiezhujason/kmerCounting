@@ -66,16 +66,12 @@ int main(int argc, char* argv[]){
 
 
 
-    uint32_t stopper = 100000; // *** USED FOR TESTING
     uint32_t clipcount = 0;
 
     std::clock_t start;
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
         read.init(al.QueryBases);
-        if (totalR == stopper) {
-            break;
-        }
 
         if (read.clipped) {
             clipcount ++;
