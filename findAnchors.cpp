@@ -75,9 +75,16 @@ int main(int argc, char* argv[]){
     // read_str buffer;
 
     */
+
+    uint32_t stopper = 10000;
+
+
     while (reader.GetNextAlignment(al)) {           // each BAM entry is processed in this loop
         totalR ++;
         read.init(al.QueryBases);
+        if (totalR == stopper) {
+            break;
+        }
 
         printf("read number: %u;\t", totalR);
         printf("read length: %u;\t", read.readLen);
