@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
     unimap_to_file(fastaFname, length, MapUni, MapUniName); // save counts map to .fahist file
     
     printf("- total length:\t%lld\n",static_cast<long long>(total_length));
-    printf("- distinct kmers that uniquely appear: \t%d\n", (int) MapUni.size());
+    printf("- distinct kmers that uniquely appear: \t%lld\n", (long long int) MapUni.size());
 
     //printMapInfo(MapUni); // print map for testing
 
