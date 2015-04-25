@@ -24,40 +24,14 @@ int main(int argc, char* argv[]){
     }
 
 
-    mapKmer uniqueKmers; // unique kmer -> string
+    mapKmer MapUni; // unique kmer -> string
 
     double duration;
     std::clock_t start;
     // -----TEST CODE STARTS HERE-----
-	file_to_unimap(mapFname, uniqueKmers, k); // load uniqueKmerMap (unordered)
+	file_to_unimap(mapFname, MapUni, k); // load uniqueKmerMap (unordered)
     // -----TEST CODE ENDS HERE-----
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     std::cout<<"Duration: "<< duration <<" s.\n";
-    
-
-    //file_to_wellmap(wellFname, MapWell);      // load all of the wells (ordered)
-
-    // printMapinfo(uniqueKmers); // print the kmer keys and values
-    
-    // test case
-    // std::list<std::string> LL;
-    // LL.push_back(std::string("GAAAAAAAAAAAAAAAAAA"));
-    // LL.push_back(std::string("AAAAAAAAAAAAAAAATTT")); 
-    // LL.push_back(std::string("AAAAAAAAAAAAATTTTTT"));
-    // LL.push_back(std::string("AAAAAAAAAATTTTTTTTT"));
-    // std::list<std::string>::iterator it;
-    // read_str buffer;
-
-
-   
-
-    
-    // To test how long: use
-    //std::clock_t start;
-    //double duration;
-    //start = std::clock();
-    // /*code here*/
-    //duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-    //std::cout<<"Duration: "<< duration <<" s.\n";
 }
 

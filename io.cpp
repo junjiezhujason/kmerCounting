@@ -101,6 +101,7 @@ int file_to_unimap(const char* fname, mapKmer& m, const int k){
        exit(1);
     }
 
+
     file.read(reinterpret_cast<char*>(&map_size), sizeof(map_size));
     for (uint64_t i = 0; i < map_size; i++) {
         file.read(reinterpret_cast<char*>(&kmer), sizeof(kmer));
@@ -111,6 +112,8 @@ int file_to_unimap(const char* fname, mapKmer& m, const int k){
     }
     file.close();
     printf("Finished loading file %s!\n", fname);
+    printf("Total number of distinct kmers:\t%lld\n", (long long int) map_size);
+    printf("Distinct kmers that are unique:\t%lld\n", (long long int) m.size());
     return 0;
 }
 
