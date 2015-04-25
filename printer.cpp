@@ -60,7 +60,7 @@ int printMapInfo(mapKmer &m) { // print all kmers in an unordered map
         kmer = it->first;
         val = it->second;
         printbits64(kmer);
-        printf("\t%lld\n", val);
+        printf("\t%lld\n", (long long int) val);
     }
     return 0;
 }
