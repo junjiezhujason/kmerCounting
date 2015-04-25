@@ -41,9 +41,6 @@ public:
     int getNextKmer(); 
     uint64_t revKmer();// returns reverse complement of the kmer 
     void printKmers();
-
-    uint64_t total_length;
-    uint64_t total_kmers = 0;  // total number of unambigous kmers
 };
 
 // io.cpp 
