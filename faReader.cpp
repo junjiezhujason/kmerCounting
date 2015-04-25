@@ -125,7 +125,7 @@ int faReader::getFirstKmer(void){
 }
 
 int faReader::recChr(void) {
-    printf("%lld\t",pos+len);
+    printf("%lld\t", (long long int)pos+len);
     while (c != '\n') { 
         c = (char) getc(fastaFile);
         printf("%c",c);
@@ -136,9 +136,9 @@ int faReader::recChr(void) {
 
 void faReader::printKmers() {
     if (is_ambiguous) {
-        printf("%lld*:\t", pos);
+        printf("%lld*:\t", (long long int) pos);
     } else {
-        printf("%lld:\t", pos);
+        printf("%lld:\t", (long long int) pos);
     }
     printf("%s\t", kmerChar);
     printbits64(kmer);
