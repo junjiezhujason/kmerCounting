@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
     while (!reader.eos) { 
         //reader.printKmers(); // print for testing
         if (reader.pos % 10000000 == 0) {
-            printf("%d bases read...\n", reader.pos);
+            printf("%lld bases read...\n", (long long int) reader.pos);
         }
         total_length ++;
         if (total_length == stop) {
