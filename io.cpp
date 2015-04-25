@@ -1,86 +1,118 @@
-#include "findAnchors.h"
+#include "kmerCounter.h"
+
+/*
+void unimap_from_fasta(const char* fastaFname, const int length, mapKmer& kmerAll, mapKmer& kmerUni, mapKmer& kmerStr){
+    uint64_t total_length;     // total length of the sequence
+    uint64_t total_kmers = 0;  // total number of unambigous kmers
+
+    FILE *fastaFile;
+    fastaFile = fopen(fastaFname,"r"); 
+    if (fastaFile == NULL) {
+       printf("fasta2ref: Cannot open FASTA file: %s!\n", fastaFname);
+       exit(1);
+    }
+    printf("============================\nstart reading <%s>.\n", fastaFname);
+    uint32_t kmercount_temp; 
+    faReader reader(fastaFile,length); //  initialize the kmer string and kmer
+    while (!reader.eos) { 
+        if (reader.pos % 1000000 == 0) {
+            printf("%d bases read...\n", reader.pos);
+        }
+        if (!reader.is_ambiguous) {
+
+            // keep track of unique kmers and remove keys of non-unique kmers
+            kmerAll[reader.kmer] ++;
+            kmercount_temp = kmerAll[reader.kmer];
+            if (kmerAll[reader.kmer] == (unsigned)1) { 
+                kmerUni[reader.kmer] = reader.pos; // position of kmer
+                //kmerStr[reader.kmer] = 0;          // on forward strand
+            }
+            if (kmerAll[reader.kmer] == (unsigned)2) { 
+                kmerUni.erase(reader.kmer); 
+                //kmerStr.erase(reader.kmer); 
+            }
+            kmerAll[reader.revKmer()] ++;
+            if (kmerAll[reader.revKmer()] == (unsigned)1) { 
+                kmerUni[reader.revKmer()] = reader.pos; // position of kmer
+                kmerStr[reader.revKmer()] = 1;          // on reverse strand
+            }
+            if (kmerAll[reader.revKmer()] == (unsigned)2) { 
+                kmerUni.erase(reader.revKmer());
+                kmerStr.erase(reader.revKmer()); 
+            }
+            // if kmerAll[reader.revKmer()] == kmerAll[reader.kmer], 
+            // then this kmer will be removed from the unique list
+            total_kmers++;
+        }  
+        reader.getNextKmer(); 
+    } 
+    fclose(fastaFile);
+    total_length = reader.pos + length;
+    total_kmers = 2*total_kmers;
+    
+    printf("done.\n-----------------\n");
+    printf("total length:\t%lld\n",static_cast<long long>(total_length));
+    printf("total kmers: \t%lld\n",static_cast<long long>(total_kmers));
+    printf("- number of distinct kmers (mapsize):  \t%d\n", (int) kmerAll.size());
+    printf("- distinct kmers that uniquely appear: \t%d\n", (int) kmerUni.size());
+    
+}
+
+*/
+int unimap_to_file(const char* refFname, const int length, mapKmer& hist, const char* histName){
+    // modified Victoria's code
+    std::string fname(refFname);
+    fname += std::string("_");
+    fname += std::to_string(static_cast<long long>(length));
+    fname += std::string(histName);
+
+    std::ofstream file;
+    file.open(fname.c_str(), std::ios::out | std::ios::binary);
+    if (!file.is_open()) {
+       printf("map_to_file: Cannot open the hist file %s!\n", fname.c_str());
+       exit(1);
+    }
+
+    uint64_t map_size = hist.size();
+    uint64_t kmer;
+    int64_t pos;
+    file.write(reinterpret_cast<char*>(&map_size), sizeof(map_size));
+    for ( mapKmer::iterator it = hist.begin(); it != hist.end(); ++it) {
+        kmer = it->first;
+        pos = it->second;
+        file.write(reinterpret_cast<char*>(&kmer), sizeof(kmer));
+        file.write(reinterpret_cast<char*>(&pos),  sizeof(pos));
+    }
+    file.close();
+    printf("map_to_file: file <%s> saved\n", fname.c_str());
+    return 0;
+}
 
 
-int file_to_unimap(const char* fname, umapKmer& m, const int k){
-	std::ifstream file;
-    uint64_t kmer64;
-    uint32_t kmer;
-    uint64_t pos64;
-    uint64_t pos;
+int file_to_unimap(const char* fname, mapKmer& m, const int k){
+    std::ifstream file;
+    uint64_t kmer;
+    int64_t pos;
     uint64_t map_size;
 
-
-	file.open(fname, std::ios::in | std::ios::binary);
-	if (!file.is_open()) {
+    file.open(fname, std::ios::in | std::ios::binary);
+    if (!file.is_open()) {
        printf("file_to_unimap: Cannot open the file %s!\n", fname);
        exit(1);
     }
 
-    if (k > 16){
-        printf("file_to_unimap: k must be no more than 16");
-        exit(1);
-    }
-
     file.read(reinterpret_cast<char*>(&map_size), sizeof(map_size));
     for (uint64_t i = 0; i < map_size; i++) {
-    	file.read(reinterpret_cast<char*>(&kmer64), sizeof(kmer64));
-        file.read(reinterpret_cast<char*>(&pos64), sizeof(pos64));
-        kmer = kmer64 & 0xFFFFFFFF; // convert 64 to 32
-        pos = pos64 & 0xFFFFFFFF; // convert 64 to 32
-        m[kmer] = pos;
-    }
-	file.close();
-    printf("Finished loading file %s!\n", fname);
-    return 0;
-}
-
-int file_to_wellmap(const char* fname, mapCount& m) {
-    std::string line;
-    std::ifstream file (fname);
-    if (!file.is_open()) {
-       printf("file_to_map: Cannot open the file %s!\n", fname);
-       exit(1);
-    }
-
-    while (std::getline (file,line)) {
-        m[line] = 0;
+        file.read(reinterpret_cast<char*>(&kmer), sizeof(kmer));
+        file.read(reinterpret_cast<char*>(&pos), sizeof(pos));
+        if (pos > -1) {
+            m[kmer] = pos;
+        }
     }
     file.close();
     printf("Finished loading file %s!\n", fname);
     return 0;
 }
 
-int map_to_file(const char* bFname, mapCount m, const int readsleft, const int areadsleft) {
-    std::string fname1(bFname);   
-    fname1 += std::string("_wacount"); 
-    std::ofstream file1 (fname1.c_str());
-    if (!file1.is_open()) {
-       printf("map_to_file: Cannot open the file %s!\n", fname1.c_str());
-       exit(1);
-    }
-    std::string fname3(bFname);   
-    fname3 += std::string("_wasummary"); 
-    std::ofstream file3 (fname3.c_str());
-    if (!file3.is_open()) {
-       printf("map_to_file: Cannot open the file %s!\n", fname3.c_str());
-       exit(1);
-    }
 
-    uint32_t wellswanchors = 0;
-    std::string bc; // barcode
-    uint32_t ct;    // count
-    for ( mapCount::iterator it = m.begin(); it != m.end(); ++it) {
-        bc = it->first;
-        ct = it->second;
-        file1 << ct << "\n"; 
 
-        if (ct > 0) {
-            wellswanchors ++;
-        }
-    }
-
-    file3 << "number of wells with anchors: " <<  wellswanchors << " / " << m.size() <<"\n";
-    file3 << "number of leftover reads anchored: " << areadsleft << "/ " << readsleft << "\n";
-
-    return 0;
-}

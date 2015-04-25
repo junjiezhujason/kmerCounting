@@ -1,4 +1,4 @@
-#include "kmerCounter.h"
+#include "findAnchors.h"
 
 int printbits(uint64_t binStr, int len){
     // TO DO: make this work for uint64_t and uint32_t
@@ -51,16 +51,16 @@ int printbits64(uint64_t binStr){
     return 0;
 }
 
-int printMapInfo(mapKmer &m) { // print all kmers in an unordered map 
-    uint64_t kmer;
-    int64_t val;
+int printMapinfo(umapKmer m) { // print all kmers in an unordered map 
+    uint32_t kmer;
+    uint32_t val;
 
     printf("(Unordered) Map Size: %d.\n",(int)m.size());
-    for ( mapKmer::iterator it = m.begin(); it != m.end(); ++it) {
+    for ( umapKmer::iterator it = m.begin(); it != m.end(); ++it) {
         kmer = it->first;
         val = it->second;
-        printbits64(kmer);
-        printf("\t%lld\n", val);
+        printbits32(kmer);
+        printf("\t%u\n", val);
     }
     return 0;
 }
