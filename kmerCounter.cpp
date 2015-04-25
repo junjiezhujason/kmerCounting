@@ -19,11 +19,14 @@ int main(int argc, char* argv[]){
 
 
     // TEST
-    uint64_t stop = 1000000;
+    uint64_t stop = 300000000;
     uint64_t total_length = 0;
 
     while (!reader.eos) { 
         //reader.printKmers(); // print for testing
+        if (reader.pos % 10000000 == 0) {
+            printf("%d bases read...\n", reader.pos);
+        }
         total_length ++;
         if (total_length == stop) {
             break;
