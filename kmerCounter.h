@@ -8,7 +8,6 @@
 #include <map>
 #include <unordered_map>
 #include <bitset>
-\
 
 // for testing
 #include <ctime>
@@ -50,9 +49,7 @@ public:
 //void unimap_fromfastaFilesta(const char* fastaFname, const int length, mapKmer& kmerAll, mapKmer& kmerUni, mapKmer& kmerStr)
 int unimap_to_file(const char* refFname, const int length, mapKmer& hist, const char* histName);
 int file_to_unimap(const char* fname, mapKmer& m, const int k);
-
-//
-int binstats_to_file(int* a1, int* a2, const int binNum, const int binLen);
+int binstats_to_file(char* fName, int* a1, int* a2, const int binNum, const int binLen);
 
 
 

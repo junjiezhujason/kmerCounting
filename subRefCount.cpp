@@ -26,46 +26,13 @@ int main(int argc, char* argv[]){
     }
 
 
-    const uint32_t refLen = 82;// 3137161264;   // length of reference 
+    const uint32_t refLen = 3137161264;   //82;// length of reference 
     std::bitset<refLen> ukmerbitset; // bit string of unique kmers
-    const uint32_t binLen = 20; //10000;        // length of subreference
+    const uint32_t binLen = 10000;        // 20; //length of subreference
     uint32_t binNum = refLen/(binLen/2) + 1; // number of bins
 
     file_to_bitset<refLen>(mapFname, k, ukmerbitset); // load the positions of unique kmers
-        
-
-
-    // MUST REMOVE!!!!!!!!!
-//
-    //
-    ////
-    //
-
-    //
-    //
-    //
-    ukmerbitset[50] = true;
-    ukmerbitset[52] = true;
-
-    ukmerbitset[81] = true;
-    ukmerbitset[80] = true;
-    ukmerbitset[79] = true;
-
-//
-    //
-
-    //
-
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-
-    printbitset<refLen>(ukmerbitset, refLen);
+    // printbitset<refLen>(ukmerbitset, refLen);
 
     int numAnchors [binNum]; // the number of anchors in a bin
     int bpCovered  [binNum]; // the bases covered by a uniquekmer in bin
@@ -102,7 +69,9 @@ int main(int argc, char* argv[]){
     printf("BinNumber: %u,\t", binNum);
     printf("TotalLen: %u,\n", refLen);
 
-    printTwoArrays(numAnchors, bpCovered, binNum, binLen);
+
+    binstats_to_file(mapFname, numAnchors, bpCovered, binNum, binLen);
+    //printTwoArrays(numAnchors, bpCovered, binNum, binLen);
 
     // test printing the two arrays
     //arrays_to_file(binLen, binNumx);

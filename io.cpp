@@ -94,12 +94,21 @@ void file_to_bitset(const char* fname, const int k, std::bitset<bitsetsize>& b)
 */
 
 
-int binstats_to_file(int* a1, int* a2, const int binNum, const int binLen)
+int binstats_to_file(char* fName, int* a1, int* a2, const int binNum, const int binLen)
 {
+    std::string bFname(fName);
+    std::string fname1(bFname);   
+    fname1 += std::string("_subref"); 
+    std::ofstream file1 (fname1.c_str());
+    if (!file1.is_open()) {
+       printf("Cannot open the file %s!\n", fname1.c_str());
+       exit(1);
+    }
+
     for (int i = 0; i < binNum; ++i) 
     {  
-        printf("%d\t", a1[i]);
-        printf("%d\n", a2[i]);
+        file1 << a1[i] << "\t"<< a2[i] << "\n"; // record the last linePos = total number of reads
     }
+    file1.close();
     return 0;
 }
