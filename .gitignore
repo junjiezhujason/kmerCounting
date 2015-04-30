@@ -1,3 +1,4 @@
 old/
 *.o
+results/
 unicorn.fa_*
