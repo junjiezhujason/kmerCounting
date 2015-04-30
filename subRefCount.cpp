@@ -12,27 +12,41 @@ int main(int argc, char* argv[]){
     char* mapFname;                 // .fasta_uniquePos file name
     uint32_t k;                     // kmer length
 
-     if ( argc == 3 ) {
-            //bamFname  = argv[1];
+    if ( argc == 3 ) {
             mapFname = argv[1];
             k = atoi(argv[2]); // specify k for error control
-            //rLen = atoi(argv[4]);
-            //intvl = atoi(argv[5]); 
-            //tName = argv[6]; 
-            //wellFname = argv[7];
     } else {
         std::cerr << "Wrong number of arguments." << std::endl;
         exit(1);
     }
 
-
     const uint32_t refLen = 3137161264;   //82;// length of reference 
-    std::bitset<refLen> ukmerbitset; // bit string of unique kmers
     const uint32_t binLen = 10000;        // 20; //length of subreference
     uint32_t binNum = refLen/(binLen/2) + 1; // number of bins
 
-    file_to_bitset<refLen>(mapFname, k, ukmerbitset); // load the positions of unique kmers
-    // printbitset<refLen>(ukmerbitset, refLen);
+
+    bitvec ukmerbitvec(refLen); 
+    //std::bitset<refLen> ukmerbitvec; // bit string of unique kmers
+
+    
+    printf("----\n");
+    printf("BinSize: %u,\t", binLen);
+    printf("BinNumber: %u,\t", binNum);
+    printf("TotalLen: %u,\n", refLen);
+    printf("Size: %u,\n", (uint) ukmerbitvec.size());
+
+    file_to_bitvec(mapFname, k, ukmerbitvec); // load the positions of unique kmers to the bit vector
+    //bitvec_to_file(mapFname, k, ukmerbitvec); // save the bitvec to file
+    //file_to_bitset(mapFname, k, ukmerbitvec); // load the positions of unique kmers
+
+
+    // TESTING
+    //ukmerbitvec[9999] = true;
+    //ukmerbitvec[10000]  = true;
+    //printbitset<refLen>(ukmerbitvec, refLen);
+
+
+    
 
     int numAnchors [binNum]; // the number of anchors in a bin
     int bpCovered  [binNum]; // the bases covered by a uniquekmer in bin
@@ -50,7 +64,7 @@ int main(int argc, char* argv[]){
             if (spos + j >= refLen) {
                 break; // handle the last bin that is not full size
             }
-            if (ukmerbitset.test(spos + j)) // if there is a unique kmer at position j in bin
+            if (ukmerbitvec.at(spos + j)) // if there is a unique kmer at position j in bin
             {
                 count ++;
                 countdown = k;
@@ -71,40 +85,6 @@ int main(int argc, char* argv[]){
 
 
     binstats_to_file(mapFname, numAnchors, bpCovered, binNum, binLen);
-    //printTwoArrays(numAnchors, bpCovered, binNum, binLen);
 
-    // test printing the two arrays
-    //arrays_to_file(binLen, binNumx);
-
-
-    //int rLen; // read length
-    //int intvl; // number of bases to skip
-    //char* tName; // MD or BX
-
-    /*
-    if ( argc == 3 ) {
-            //bamFname  = argv[1];
-            mapFname = argv[1];
-            k = atoi(argv[2]); // specify k for error control
-            //rLen = atoi(argv[4]);
-            //intvl = atoi(argv[5]); 
-            //tName = argv[6]; 
-            //wellFname = argv[7];
-    } else {
-        std::cerr << "Wrong number of arguments." << std::endl;
-        exit(1);
-    }
-
-
-    mapKmer MapUni; // unique kmer -> string
-
-    double duration;
-    std::clock_t start;
-    // -----TEST CODE STARTS HERE-----
-	file_to_unimap(mapFname, MapUni, k); // load uniqueKmerMap (unordered)
-    // -----TEST CODE ENDS HERE-----
-    duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
-    std::cout<<"Duration: "<< duration <<" s.\n";
-    */
 }
 
