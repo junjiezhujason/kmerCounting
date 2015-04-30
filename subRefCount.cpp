@@ -36,16 +36,16 @@ int main(int argc, char* argv[]){
 
     int numAnchors [binNum]; // the number of anchors in a bin
     int bpCovered  [binNum]; // the bases covered by a uniquekmer in bin
-    int count, bases, spos, countdown;  // unikmer count, bases covered, start position of a bin
-
+    int countdown;  // unikmer count, bases covered, start position of a bin
+    uint count, bases, spos;
     // travesrse through the biset 
-    for (int i = 0; i < binNum; ++i) 
+    for (uint i = 0; i < binNum; ++i) 
     {  
         spos = i * binLen / 2; // start position of a bin
         count = 0;
         bases = 0;
         countdown = 0; // reset the covered bases
-        for (int j = 0; j < binLen; ++j)
+        for (uint j = 0; j < binLen; ++j)
         {   
             if (spos + j >= refLen) {
                 break; // handle the last bin that is not full size
